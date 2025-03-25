@@ -1,6 +1,7 @@
 package coresystems
 
 import (
+	"math"
 	"platformer/components"
 
 	"github.com/TheBitDrifter/blueprint"
@@ -59,6 +60,21 @@ func (s *PlayerPlatformCollisionSystem) resolve(scene blueprint.Scene, platformC
 		*playerShape, *platformShape, playerPosition.Two, platformPosition.Two,
 	); ok {
 
+		// Return early if ignoring
+		ignoringPlatforms, ignorePlatform := components.IgnorePlatformComponent.GetFromCursorSafe(playerCursor)
+
+		platformEntity, err := platformCursor.CurrentEntity()
+		if err != nil {
+			return err
+		}
+		if ignoringPlatforms {
+			for _, ignored := range ignorePlatform.Items {
+				if ignored.EntityID == int(platformEntity.ID()) && ignored.Recycled == platformEntity.Recycled() {
+					return nil
+				}
+			}
+		}
+
 		// Check if any of the past player positions indicate the player was above the platform
 		platformTop := platformShape.Polygon.WorldVertices[0].Y
 
@@ -95,6 +111,40 @@ func (s *PlayerPlatformCollisionSystem) resolve(scene blueprint.Scene, platformC
 				}
 			} else {
 				onGround.LastTouch = currentTick
+			}
+
+			// Ignore Tracking
+			if ignoringPlatforms {
+				// Use the maximum possible int64 value as initial comparison point
+				var oldestTick int64 = math.MaxInt64
+				oldestIndex := -1
+
+				// Iterate through all ignored platforms
+				for i, ignored := range ignorePlatform.Items {
+					// Check if this platform entity is already in the ignore list
+					// by comparing both entity ID and recycled status
+					if ignored.EntityID == int(platformEntity.ID()) && ignored.Recycled == platformEntity.Recycled() {
+						// Platform is already being ignored, no need to add it again
+						return nil
+					}
+
+					// Track the item with the oldest "LastActive" timestamp
+					// This helps us identify which item to replace if the ignore list is full
+					if int64(ignored.LastActive) < oldestTick {
+						oldestTick = int64(ignored.LastActive)
+						oldestIndex = i
+					}
+				}
+
+				// If we found an item to replace (oldestIndex != -1),
+				// update that slot with the current platform entity's information
+				if oldestIndex != -1 {
+					// Replace the oldest ignored platform with the current one
+					ignorePlatform.Items[oldestIndex].EntityID = int(platformEntity.ID())
+					ignorePlatform.Items[oldestIndex].Recycled = platformEntity.Recycled()
+					ignorePlatform.Items[oldestIndex].LastActive = currentTick
+					return nil
+				}
 			}
 		}
 	}

@@ -25,7 +25,7 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
 		dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
 		incomingInputs := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
 		direction := blueprintspatial.Components.Direction.GetFromCursor(cursor)
-		isGrounded := components.OnGroundComponent.CheckCursor(cursor) // Check if player is on ground
+		isGrounded := components.OnGroundComponent.CheckCursor(cursor)
 
 		_, pressedLeft := incomingInputs.ConsumeInput(actions.Left)
 		if pressedLeft {
@@ -36,17 +36,23 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
 		_, pressedRight := incomingInputs.ConsumeInput(actions.Right)
 		if pressedRight {
 			direction.SetRight()
+
 			dyn.Vel.X = speed
 		}
-
-		// Only allow jumping when grounded
 		_, pressedUp := incomingInputs.ConsumeInput(actions.Jump)
 		if pressedUp && isGrounded {
 			dyn.Vel.Y = -jumpforce
 		}
 
-		// Handle down press (we'll implement platform dropping later)
-		_, _ = incomingInputs.ConsumeInput(actions.Down)
+		// Add down handling here:
+		_, pressedDown := incomingInputs.ConsumeInput(actions.Down)
+		if pressedDown && !pressedUp { // <- you cant drop and jump same tick
+			playerEntity, _ := cursor.CurrentEntity()
+			err := playerEntity.EnqueueAddComponent(components.IgnorePlatformComponent)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }

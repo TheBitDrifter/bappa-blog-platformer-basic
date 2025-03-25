@@ -14,4 +14,5 @@ var DefaultCoreSystems = []blueprint.CoreSystem{
 	PlayerBlockCollisionSystem{},
 	NewPlayerPlatformCollisionSystem(),
 	OnGroundClearingSystem{},
+	IgnorePlatformClearingSystem{},
 }
