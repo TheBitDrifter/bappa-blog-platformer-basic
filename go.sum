@@ -8,6 +8,8 @@ github.com/TheBitDrifter/mask v0.0.0-20250302170854-74953aa585aa h1:4uVpECsjSHrl
 github.com/TheBitDrifter/mask v0.0.0-20250302170854-74953aa585aa/go.mod h1:2Gumixx/FRZwxlwMNCpSr38UTbS5gUSSGdntrSmivGk=
 github.com/TheBitDrifter/table v0.0.0-20250302173100-264081644811 h1:D0ZpB3P/L6nL0Uj70AUg+SAgwuUQKNpZUukdcwwlyhU=
 github.com/TheBitDrifter/table v0.0.0-20250302173100-264081644811/go.mod h1:XS5HEO4K9gZmCzGpB6E8r/If186aZhQNnl4Pm6Uok1Y=
+github.com/TheBitDrifter/tteokbokki v0.0.2-early-alpha h1:PxWibFYnCnzFSLa2muDSh1Oc5OdrV8PML1Rc3PJGVIk=
+github.com/TheBitDrifter/tteokbokki v0.0.2-early-alpha/go.mod h1:QREHfnN5a+YJZ/mS0xPMRu069bUG0ijzEn+NbvxNYzg=
 github.com/TheBitDrifter/util v0.0.0-20241102212109-342f4c0a810e h1:GichypQhTVgS3J1TpSs2nuij+L2EtxBSv70vjk03KAg=
 github.com/TheBitDrifter/util v0.0.0-20241102212109-342f4c0a810e/go.mod h1:k3LfyqK/t6Tm1vP1jqGvmIgc05BTEI6rbOEhkXS1uH4=
 github.com/TheBitDrifter/warehouse v0.0.1-early-alpha.1 h1:DH6j4Fu8PRH8XdEIJD61GAFVOnAjGk26eYAr7Nqjyog=

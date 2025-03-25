@@ -3,8 +3,11 @@ package main
 import (
 	"embed"
 	"log"
+	"platformer/scenes" // Import our scenes package
 
+	"github.com/TheBitDrifter/blueprint"
 	"github.com/TheBitDrifter/coldbrew"
+	coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
 )
 
 //go:embed assets/*
@@ -29,10 +32,32 @@ func main() {
 		assets,
 	)
 
-	// Settings
+	// Configure client settings
 	client.SetTitle("Platformer")
 	client.SetResizable(true)
 	client.SetMinimumLoadTime(30)
+
+	// Register scene One
+	err := client.RegisterScene(
+		scenes.SceneOne.Name,
+		scenes.SceneOne.Width,
+		scenes.SceneOne.Height,
+		scenes.SceneOne.Plan,
+		[]coldbrew.RenderSystem{},
+		[]coldbrew.ClientSystem{},
+		[]blueprint.CoreSystem{},
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Register global systems
+	client.RegisterGlobalRenderSystem(
+		coldbrew_rendersystems.GlobalRenderer{},
+	)
+
+	// Activate the camera
+	client.ActivateCamera()
 
 	// Run the client
 	if err := client.Start(); err != nil {
