@@ -47,6 +47,19 @@ func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, pl
 	if ok, collisionResult := spatial.Detector.Check(
 		*playerShape, *blockShape, playerPosition.Two, blockPosition.Two,
 	); ok {
+
+		// Determine collision surfaces
+		playerOnTopOfBlock := collisionResult.IsTopB()
+		blockOnTopOfPlayer := collisionResult.IsTop()
+
+		// Prevents snapping on AAB corner transitions/collisions
+		if playerOnTopOfBlock && playerDynamics.Vel.Y < 0 {
+			return nil
+		}
+		if blockOnTopOfPlayer && playerDynamics.Vel.Y > 0 {
+			return nil
+		}
+
 		// Otherwise resolve as normal
 		motion.Resolver.Resolve(
 			&playerPosition.Two,
@@ -56,10 +69,13 @@ func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, pl
 			collisionResult,
 		)
 
-		// Add ground handling here:
+		// Only set player as grounded when they're on top of a block
+		if !playerOnTopOfBlock {
+			return nil
+		}
+
 		currentTick := scene.CurrentTick()
 		playerAlreadyGrounded, onGround := components.OnGroundComponent.GetFromCursorSafe(playerCursor)
-
 		// Update onGround accordingly (create or update)
 		if !playerAlreadyGrounded {
 			playerEntity, err := playerCursor.CurrentEntity()
