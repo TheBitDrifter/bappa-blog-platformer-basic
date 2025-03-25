@@ -137,3 +137,23 @@ func NewBlock(sto warehouse.Storage, x, y float64) error {
 			WithOffset(vector.Two{X: -33, Y: -38}),
 	)
 }
+
+func NewPlatform(sto warehouse.Storage, x, y float64) error {
+	platformArche, err := sto.NewOrExistingArchetype(
+		components.PlatformTag,
+		blueprintclient.Components.SpriteBundle,
+		blueprintspatial.Components.Shape,
+		blueprintspatial.Components.Position,
+		blueprintmotion.Components.Dynamics,
+	)
+	if err != nil {
+		return err
+	}
+	return platformArche.Generate(1,
+		blueprintspatial.NewPosition(x, y),
+		blueprintspatial.NewTriangularPlatform(144, 16),
+		blueprintclient.NewSpriteBundle().
+			AddSprite("terrain/platform.png", true).
+			WithOffset(vector.Two{X: -72, Y: -8}),
+	)
+}

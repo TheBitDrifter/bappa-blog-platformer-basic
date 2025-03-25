@@ -12,5 +12,6 @@ var DefaultCoreSystems = []blueprint.CoreSystem{
 	tteo_coresystems.IntegrationSystem{},
 	tteo_coresystems.TransformSystem{},
 	PlayerBlockCollisionSystem{},
+	NewPlayerPlatformCollisionSystem(),
 	OnGroundClearingSystem{},
 }

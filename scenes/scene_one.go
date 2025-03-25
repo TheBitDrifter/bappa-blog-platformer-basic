@@ -41,9 +41,22 @@ func sceneOnePlan(height, width int, sto warehouse.Storage) error {
 	if err != nil {
 		return err
 	}
-
+	err = NewPlatform(sto, 130, 350)
 	if err != nil {
 		return err
 	}
+	err = NewPlatform(sto, 220, 270)
+	if err != nil {
+		return err
+	}
+	err = NewPlatform(sto, 320, 170)
+	if err != nil {
+		return err
+	}
+	err = NewPlatform(sto, 420, 300)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
