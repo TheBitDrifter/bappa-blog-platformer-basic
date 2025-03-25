@@ -4,6 +4,7 @@ import (
 	"embed"
 	"log"
 	"platformer/actions"
+	"platformer/clientsystems"
 	"platformer/coresystems"
 	"platformer/scenes" // Import our scenes package
 
@@ -47,7 +48,7 @@ func main() {
 		scenes.SceneOne.Height,
 		scenes.SceneOne.Plan,
 		[]coldbrew.RenderSystem{},
-		[]coldbrew.ClientSystem{},
+		clientsystems.DefaultClientSystems,
 		coresystems.DefaultCoreSystems,
 	)
 	if err != nil {
