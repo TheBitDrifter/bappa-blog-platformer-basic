@@ -47,7 +47,7 @@ func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, pl
 	if ok, collisionResult := spatial.Detector.Check(
 		*playerShape, *blockShape, playerPosition.Two, blockPosition.Two,
 	); ok {
-		// Resolve collision
+		// Otherwise resolve as normal
 		motion.Resolver.Resolve(
 			&playerPosition.Two,
 			&blockPosition.Two,
@@ -55,6 +55,28 @@ func (PlayerBlockCollisionSystem) resolve(scene blueprint.Scene, blockCursor, pl
 			blockDynamics,
 			collisionResult,
 		)
+
+		// Add ground handling here:
+		currentTick := scene.CurrentTick()
+		playerAlreadyGrounded, onGround := components.OnGroundComponent.GetFromCursorSafe(playerCursor)
+
+		// Update onGround accordingly (create or update)
+		if !playerAlreadyGrounded {
+			playerEntity, err := playerCursor.CurrentEntity()
+			if err != nil {
+				return err
+			}
+			// We cannot mutate during a cursor iteration, so we use the enqueue API
+			err = playerEntity.EnqueueAddComponentWithValue(
+				components.OnGroundComponent,
+				components.OnGround{LastTouch: currentTick, Landed: currentTick},
+			)
+			if err != nil {
+				return err
+			}
+		} else {
+			onGround.LastTouch = currentTick
+		}
 	}
 	return nil
 }

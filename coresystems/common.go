@@ -6,9 +6,11 @@ import (
 )
 
 var DefaultCoreSystems = []blueprint.CoreSystem{
+	GravitySystem{},
 	FrictionSystem{},
 	PlayerMovementSystem{},
 	tteo_coresystems.IntegrationSystem{},
 	tteo_coresystems.TransformSystem{},
 	PlayerBlockCollisionSystem{},
+	OnGroundClearingSystem{},
 }

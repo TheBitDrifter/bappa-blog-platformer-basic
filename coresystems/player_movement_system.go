@@ -2,6 +2,7 @@ package coresystems
 
 import (
 	"platformer/actions"
+	"platformer/components"
 
 	"github.com/TheBitDrifter/blueprint"
 	blueprintinput "github.com/TheBitDrifter/blueprint/input"
@@ -10,7 +11,8 @@ import (
 )
 
 const (
-	speed = 120.0
+	speed     = 120.0
+	jumpforce = 220.0
 )
 
 type PlayerMovementSystem struct{}
@@ -23,6 +25,7 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
 		dyn := blueprintmotion.Components.Dynamics.GetFromCursor(cursor)
 		incomingInputs := blueprintinput.Components.InputBuffer.GetFromCursor(cursor)
 		direction := blueprintspatial.Components.Direction.GetFromCursor(cursor)
+		isGrounded := components.OnGroundComponent.CheckCursor(cursor) // Check if player is on ground
 
 		_, pressedLeft := incomingInputs.ConsumeInput(actions.Left)
 		if pressedLeft {
@@ -36,15 +39,14 @@ func (sys PlayerMovementSystem) Run(scene blueprint.Scene, dt float64) error {
 			dyn.Vel.X = speed
 		}
 
+		// Only allow jumping when grounded
 		_, pressedUp := incomingInputs.ConsumeInput(actions.Jump)
-		if pressedUp {
-			dyn.Vel.Y = -speed
+		if pressedUp && isGrounded {
+			dyn.Vel.Y = -jumpforce
 		}
 
-		_, pressedDown := incomingInputs.ConsumeInput(actions.Down)
-		if pressedDown {
-			dyn.Vel.Y = speed
-		}
+		// Handle down press (we'll implement platform dropping later)
+		_, _ = incomingInputs.ConsumeInput(actions.Down)
 	}
 	return nil
 }
