@@ -58,6 +58,7 @@ func main() {
 	// Register global systems
 	client.RegisterGlobalRenderSystem(
 		coldbrew_rendersystems.GlobalRenderer{},
+		&coldbrew_rendersystems.DebugRenderer{},
 	)
 
 	// Activate the camera

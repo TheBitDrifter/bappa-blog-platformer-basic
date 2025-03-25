@@ -8,6 +8,7 @@ import (
 var DefaultCoreSystems = []blueprint.CoreSystem{
 	FrictionSystem{},
 	PlayerMovementSystem{},
-	tteo_coresystems.IntegrationSystem{}, // Update velocities and positions
-	tteo_coresystems.TransformSystem{},   // Update collision shapes
+	tteo_coresystems.IntegrationSystem{},
+	tteo_coresystems.TransformSystem{},
+	PlayerBlockCollisionSystem{},
 }

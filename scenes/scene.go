@@ -2,6 +2,7 @@ package scenes
 
 import (
 	"platformer/animations"
+	"platformer/components"
 
 	"github.com/TheBitDrifter/blueprint"
 	"github.com/TheBitDrifter/blueprint/vector"
@@ -67,4 +68,72 @@ func NewPlayer(sto warehouse.Storage, x, y float64) error {
 		return err
 	}
 	return nil
+}
+
+func NewFloor(sto warehouse.Storage, y float64) error {
+	terrainArchetype, err := sto.NewOrExistingArchetype(
+		blueprintclient.Components.SpriteBundle,
+		components.BlockTerrainTag,
+		blueprintspatial.Components.Shape,
+		blueprintspatial.Components.Position,
+		blueprintmotion.Components.Dynamics,
+	)
+	if err != nil {
+		return err
+	}
+	return terrainArchetype.Generate(1,
+		blueprintspatial.NewPosition(1500, y),
+		blueprintspatial.NewRectangle(4000, 50),
+		blueprintclient.NewSpriteBundle().
+			AddSprite("terrain/floor.png", true).
+			WithOffset(vector.Two{X: -1500, Y: -25}),
+	)
+}
+
+func NewInvisibleWalls(sto warehouse.Storage, width, height int) error {
+	terrainArchetype, err := sto.NewOrExistingArchetype(
+		blueprintclient.Components.SpriteBundle,
+		components.BlockTerrainTag,
+		blueprintspatial.Components.Shape,
+		blueprintspatial.Components.Position,
+		blueprintmotion.Components.Dynamics,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Wall left (invisible)
+	err = terrainArchetype.Generate(1,
+		blueprintspatial.NewRectangle(10, float64(height+300)),
+		blueprintspatial.NewPosition(0, 0),
+	)
+	if err != nil {
+		return err
+	}
+
+	// Wall right (invisible)
+	return terrainArchetype.Generate(1,
+		blueprintspatial.NewRectangle(10, float64(height+300)),
+		blueprintspatial.NewPosition(float64(width), 0),
+	)
+}
+
+func NewBlock(sto warehouse.Storage, x, y float64) error {
+	terrainArchetype, err := sto.NewOrExistingArchetype(
+		blueprintclient.Components.SpriteBundle,
+		components.BlockTerrainTag,
+		blueprintspatial.Components.Shape,
+		blueprintspatial.Components.Position,
+		blueprintmotion.Components.Dynamics,
+	)
+	if err != nil {
+		return err
+	}
+	return terrainArchetype.Generate(1,
+		blueprintspatial.NewPosition(x, y),
+		blueprintspatial.NewRectangle(64, 75),
+		blueprintclient.NewSpriteBundle().
+			AddSprite("terrain/block.png", true).
+			WithOffset(vector.Two{X: -33, Y: -38}),
+	)
 }

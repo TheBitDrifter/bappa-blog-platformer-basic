@@ -27,6 +27,21 @@ func sceneOnePlan(height, width int, sto warehouse.Storage) error {
 		return err
 	}
 
+	err = NewInvisibleWalls(sto, width, height)
+	if err != nil {
+		return err
+	}
+
+	err = NewBlock(sto, 285, 390)
+	if err != nil {
+		return err
+	}
+
+	err = NewFloor(sto, 460)
+	if err != nil {
+		return err
+	}
+
 	if err != nil {
 		return err
 	}
