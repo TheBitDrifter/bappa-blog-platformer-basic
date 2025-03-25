@@ -21,6 +21,12 @@ func sceneOnePlan(height, width int, sto warehouse.Storage) error {
 		AddLayer("backgrounds/city/mid.png", 0.1, 0.1).
 		AddLayer("backgrounds/city/near.png", 0.2, 0.2).
 		Build()
+
+	err = NewPlayer(sto, 100, 100)
+	if err != nil {
+		return err
+	}
+
 	if err != nil {
 		return err
 	}
