@@ -3,11 +3,14 @@ package main
 import (
 	"embed"
 	"log"
+	"platformer/actions"
+	"platformer/coresystems"
 	"platformer/scenes" // Import our scenes package
 
-	"github.com/TheBitDrifter/blueprint"
 	"github.com/TheBitDrifter/coldbrew"
+	coldbrew_clientsystems "github.com/TheBitDrifter/coldbrew/clientsystems"
 	coldbrew_rendersystems "github.com/TheBitDrifter/coldbrew/rendersystems"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 //go:embed assets/*
@@ -45,7 +48,7 @@ func main() {
 		scenes.SceneOne.Plan,
 		[]coldbrew.RenderSystem{},
 		[]coldbrew.ClientSystem{},
-		[]blueprint.CoreSystem{},
+		coresystems.DefaultCoreSystems,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -58,6 +61,20 @@ func main() {
 
 	// Activate the camera
 	client.ActivateCamera()
+
+	// Register receiver/actions
+	receiver1, _ := client.ActivateReceiver()
+	receiver1.RegisterKey(ebiten.KeySpace, actions.Jump)
+	receiver1.RegisterKey(ebiten.KeyW, actions.Jump)
+	receiver1.RegisterKey(ebiten.KeyA, actions.Left)
+	receiver1.RegisterKey(ebiten.KeyD, actions.Right)
+	receiver1.RegisterKey(ebiten.KeyS, actions.Down)
+
+	// Default client systems for camera mapping and receiver mapping
+	client.RegisterGlobalClientSystem(
+		coldbrew_clientsystems.InputBufferSystem{},
+		&coldbrew_clientsystems.CameraSceneAssignerSystem{},
+	)
 
 	// Run the client
 	if err := client.Start(); err != nil {
