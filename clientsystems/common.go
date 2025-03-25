@@ -8,4 +8,5 @@ import (
 var DefaultClientSystems = []coldbrew.ClientSystem{
 	&CameraFollowerSystem{},
 	&coldbrew_clientsystems.BackgroundScrollSystem{},
+	PlayerAnimationSystem{},
 }
